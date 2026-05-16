@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 export function ArtifactFrame({ html, title }) {
   const iframeRef = useRef(null)
-  const [height, setHeight] = useState(300)
+  const [height, setHeight] = useState(500)
 
   useEffect(() => {
     const iframe = iframeRef.current
@@ -15,7 +15,7 @@ export function ArtifactFrame({ html, title }) {
     const handleLoad = () => {
       try {
         const h = iframe.contentDocument?.body?.scrollHeight
-        if (h) setHeight(Math.max(h + 24, 120))
+        if (h) setHeight(Math.max(h + 40, 500))
       } catch {}
     }
 

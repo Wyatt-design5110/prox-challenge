@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ArtifactFrame, parseResponse } from './ArtifactFrame.jsx'
+import { ManualImage, parseManualImageTags } from './ManualImage.jsx'
 
 export function MessageBubble({ message, isStreaming }) {
   const isUser = message.role === 'user'
@@ -16,10 +17,10 @@ export function MessageBubble({ message, isStreaming }) {
     )
   }
 
-  // While streaming: strip partial artifact tags from visible text, show spinner
+  // While streaming: strip partial artifact tags, show spinner
   if (isStreaming) {
-    const visibleText = content.replace(/<ARTIFACT[\s\S]*$/, '').trim()
-    const hasArtifactInProgress = content.includes('<ARTIFACT')
+    const visibleText = content.replace(/<ARTIFACT[\s\S]*$/, '').replace(/<MANUAL_IMAGE[\s\S]*$/, '').trim()
+    const hasArtifactInProgress = content.includes('<ARTIFACT') || content.includes('<MANUAL_IMAGE')
 
     return (
       <div style={styles.row}>
@@ -46,24 +47,35 @@ export function MessageBubble({ message, isStreaming }) {
     )
   }
 
-  // Fully received — parse and render artifacts
+  // Fully received — parse artifacts, manual images, and text
   const segments = parseResponse(content)
 
   return (
     <div style={styles.row}>
       <div style={styles.avatarAgent}>V</div>
       <div style={styles.agentContent}>
-        {segments.map((seg, i) =>
-          seg.type === 'artifact'
-            ? <ArtifactFrame key={i} html={seg.html} title={seg.title} />
-            : (
-              <div key={i} style={styles.agentBubble}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-                  {seg.content}
-                </ReactMarkdown>
-              </div>
-            )
-        )}
+        {segments.map((seg, i) => {
+          if (seg.type === 'artifact') {
+            return <ArtifactFrame key={i} html={seg.html} title={seg.title} />
+          }
+          // Parse manual image tags within text segments
+          const textSegments = parseManualImageTags(seg.content || seg.text || '')
+          return (
+            <div key={i}>
+              {textSegments.map((ts, j) =>
+                ts.type === 'manualImage'
+                  ? <ManualImage key={j} imageKey={ts.key} />
+                  : ts.content?.trim() && (
+                    <div key={j} style={styles.agentBubble}>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                        {ts.content}
+                      </ReactMarkdown>
+                    </div>
+                  )
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -136,6 +148,7 @@ const styles = {
     fontSize: '14px',
     color: '#c8c5c0',
     lineHeight: 1.65,
+    marginBottom: '8px',
   },
   userBubble: {
     background: '#242424',
@@ -166,7 +179,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
-    padding: '20px 20px',
+    padding: '20px',
   },
   spinner: {
     width: '18px',

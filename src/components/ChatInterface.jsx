@@ -267,6 +267,8 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '18px',
+    pointerEvents: 'auto',  // add this
+    scrollBehavior: 'smooth',  // add this
   },
   emptyState: {
     display: 'flex',
