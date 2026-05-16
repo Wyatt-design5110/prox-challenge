@@ -103,7 +103,7 @@ Tested against the evaluation criteria:
 
 ## Future Direction
 
-This is purpose-built for the OmniPro 220. The natural next step is a document ingestion pipeline where any product manual can be uploaded, parsed, and used to create a product-specific agent instantly — which is exactly what Prox does at scale. The architecture here (PDF → Claude → multimodal response) is the core pattern that would generalize across any product in Prox's catalog.
+This is purpose-built for the OmniPro 220. The natural next step is a document ingestion pipeline where any product manual can be uploaded, parsed, and used to create a product-specific agent instantly. Wich is exactly what Prox does at scale. The architecture here (PDF → Claude → multimodal response) is the core pattern that would generalize across any product in Prox's catalog.
 
 Other improvements with more time:
 - Voice input via Web Speech API for hands-free use in a shop
