@@ -2,6 +2,8 @@
 
 **Live demo:** https://prox-challenge-mu.vercel.app
 
+**Video walkthrough:** https://youtu.be/HhPy7CFEkaI
+
 A multimodal AI agent for the Vulcan OmniPro 220 multiprocess welding system, built for the Prox founding engineer challenge. Ask any question about setup, operation, or troubleshooting — the agent answers from the full owner's manual and generates interactive visuals, diagrams, and calculators when they help more than words.
 
 ---
